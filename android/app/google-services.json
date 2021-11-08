@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "105473005980",
+    "firebase_url": "https://cloud-water-ac2cb-default-rtdb.firebaseio.com",
+    "project_id": "cloud-water-ac2cb",
+    "storage_bucket": "cloud-water-ac2cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105473005980:android:37891856bd800a570b9059",
+        "android_client_info": {
+          "package_name": "br.ucsal.cloud_water"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "105473005980-20t7cfkclu4v79qa1pmhmpf8hb5fgos3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.ucsal.cloud_water",
+            "certificate_hash": "2446d8f639a3cfc4bcf2e8fb2cac8e03bc39ba68"
+          }
+        },
+        {
+          "client_id": "105473005980-ljgm8m05smgf6argdc14l8u036hvhbnj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEJoCQWARgXUcmkQvLOjX3HGFUSA72Ms0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "105473005980-ljgm8m05smgf6argdc14l8u036hvhbnj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

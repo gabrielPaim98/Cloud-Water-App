@@ -1,5 +1,7 @@
 import 'package:cloud_water/view/home/home_view.dart';
 import 'package:cloud_water/view/home/home_view_model.dart';
+import 'package:cloud_water/view/login/login_view.dart';
+import 'package:cloud_water/view/login/login_view_model.dart';
 import 'package:cloud_water/view/logs/logs_view.dart';
 import 'package:cloud_water/view/logs/logs_view_model.dart';
 import 'package:cloud_water/view/weather/weather_view.dart';
@@ -7,10 +9,13 @@ import 'package:cloud_water/view/weather/weather_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (context) => LoginViewModel(),
+        ),
         ChangeNotifierProvider(
           create: (context) => HomeViewModel(),
         ),
@@ -34,7 +39,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      // home: MyHomePage(),
+      home: LoginView(),
     );
   }
 }
