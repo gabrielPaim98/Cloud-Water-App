@@ -4,5 +4,5 @@ import 'package:firebase_core/firebase_core.dart';
 class Instances {
   static FirebaseApp? firebaseApp;
   static FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  static UserCredential? userCredential;
+  static User? user;
 }

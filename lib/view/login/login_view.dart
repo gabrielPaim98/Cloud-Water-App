@@ -1,7 +1,7 @@
-import 'package:cloud_water/main.dart';
 import 'package:cloud_water/util/colors.dart';
 import 'package:cloud_water/util/text_styles.dart';
 import 'package:cloud_water/view/login/login_view_model.dart';
+import 'package:cloud_water/view/main/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +16,7 @@ class LoginView extends StatelessWidget {
         if (viewModel.shouldNavigateHome) {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
+              MaterialPageRoute(builder: (context) => MainView()),
               (route) => false);
         }
 

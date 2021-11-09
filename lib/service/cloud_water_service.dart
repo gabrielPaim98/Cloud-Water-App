@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:cloud_water/model/home_options.dart';
 import 'package:cloud_water/model/logs.dart';
 import 'package:cloud_water/model/weather.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class CloudWaterService {
@@ -69,6 +70,18 @@ class CloudWaterService {
       prediction = null;
     }
     return prediction;
+  }
+
+  Future<bool> addDevice(String name, String serial) async {
+    bool isSuccess;
+    try {
+      await Future<dynamic>.delayed(const Duration(seconds: 3));
+      isSuccess = true;
+    } catch (e) {
+      isSuccess = false;
+    }
+
+    return isSuccess;
   }
 }
 
