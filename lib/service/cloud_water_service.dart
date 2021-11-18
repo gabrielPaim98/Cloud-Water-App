@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_water/instances.dart';
 import 'package:cloud_water/model/home_options.dart';
 import 'package:cloud_water/model/logs.dart';
 import 'package:cloud_water/model/weather.dart';
@@ -7,14 +9,74 @@ import 'package:http/http.dart' as http;
 
 class CloudWaterService {
   http.Client client = http.Client();
+  String? _userId;
+  String get userId {
+    if (_userId == null) {
+      _userId = Instances.user!.uid;
+    }
+    return _userId!;
+  }
 
-  Future<HomeOptions?> getHomeOptions() async {
+  FirebaseFirestore firestore = Instances.firestore;
+
+  CollectionReference? _configFirestore;
+  CollectionReference get configFirestore {
+    if (_configFirestore == null) {
+      _configFirestore = firestore.collection('config');
+    }
+
+    return _configFirestore!;
+  }
+
+  CollectionReference? _mainIotFirestore;
+  CollectionReference get mainIotFirestore {
+    if (_mainIotFirestore == null) {
+      _mainIotFirestore = firestore.collection('main_iot');
+    }
+
+    return _mainIotFirestore!;
+  }
+
+  CollectionReference? _usersFirestore;
+  CollectionReference get usersFirestore {
+    if (_usersFirestore == null) {
+      _usersFirestore = firestore.collection('users');
+    }
+
+    return _usersFirestore!;
+  }
+
+  /*Future<HomeOptions?> getHomeOptions() async {
     HomeOptions? options;
     try {
       await Future<dynamic>.delayed(const Duration(seconds: 3));
       options = HomeOptions.fromRawJson(_homeOptionsJSON);
     } catch (e) {
       options = null;
+    }
+
+    return options;
+  }*/
+
+  Future<HomeOptions?> getHomeOptions() async {
+    HomeOptions? options;
+    try {
+      var userData = await usersFirestore.doc(userId).get();
+      print('userData: ${userData.data()}');
+
+      var configData = await configFirestore.doc('config').get();
+      print('configData: ${configData.data()}');
+
+      var mainIotData = await mainIotFirestore
+          .where('user_id', isEqualTo: userId)
+          .limit(1)
+          .get();
+      print('mainIotData: ${mainIotData.docs[0].data()}');
+
+      options = HomeOptions.fromRawJson(_homeOptionsJSON);
+    } catch (e) {
+      options = null;
+      print('error getting home options: $e');
     }
 
     return options;
