@@ -60,7 +60,7 @@ class HomeOptions {
 
       name = firestoreConfig.firstWhere((element) => element.id == e.id).name;
       value = e.isActive;
-      config.add(Config(name: name, value: value));
+      config.add(Config(id: e.id, name: name, value: value));
     });
 
     return HomeOptions(faucetOn: faucetOn, soilRead: soilRead, config: config);
@@ -69,10 +69,12 @@ class HomeOptions {
 
 class Config {
   Config({
+    required this.id,
     required this.name,
     required this.value,
   });
 
+  String id;
   String name;
   bool value;
 
@@ -81,12 +83,14 @@ class Config {
   String toRawJson() => json.encode(toJson());
 
   factory Config.fromJson(Map<String, dynamic> json) => Config(
+        id: json["id"],
         name: json["name"],
         value: json["value"],
       );
 
   Map<String, dynamic> toJson() => {
-        "name": name,
+        "id": id,
+        '' "name": name,
         "value": value,
       };
 }

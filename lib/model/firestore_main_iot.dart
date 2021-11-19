@@ -96,7 +96,7 @@ class FirestoreLog {
 
       logs.add(FirestoreLog(
         id: i,
-        msg: value['msg'],
+        msg: value['msg'].toString().replaceAll('\\n', '\n'),
         timeStamp: timestampString,
       ));
     }

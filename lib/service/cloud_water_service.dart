@@ -69,24 +69,38 @@ class CloudWaterService {
   }
 
   Future<bool> updateFaucetStatus(bool status) async {
-    bool isSuccess;
+    bool isSuccess = false;
     try {
-      await Future<dynamic>.delayed(const Duration(seconds: 3));
-      isSuccess = true;
+      await usersFirestore
+          .doc(userId)
+          .update({'settings.faucet_on': status}).then((value) {
+        isSuccess = true;
+      }).catchError((e) {
+        isSuccess = false;
+        print('error updating faucet status: $e');
+      });
     } catch (e) {
       isSuccess = false;
+      print('error updating faucet status: $e');
     }
 
     return isSuccess;
   }
 
   Future<bool> updateConfig(Config config) async {
-    bool isSuccess;
+    bool isSuccess = false;
     try {
-      await Future<dynamic>.delayed(const Duration(seconds: 3));
-      isSuccess = true;
+      await usersFirestore
+          .doc(userId)
+          .update({'settings.config.${config.id}': config.value}).then((value) {
+        isSuccess = true;
+      }).catchError((e) {
+        isSuccess = false;
+        print('error updating config status: $e');
+      });
     } catch (e) {
       isSuccess = false;
+      print('error updating config status: $e');
     }
 
     return isSuccess;
@@ -147,76 +161,6 @@ class CloudWaterService {
     return FirestoreMainIot.fromFirestore(mainIotData.docs.first.data());
   }
 }
-
-final String _homeOptionsJSON = """
-{
-  "faucet_on": true,
-  "soil_read": [
-    {
-      "name": "Jardim Frontal",
-      "value": 0.001,
-      "status": "low"
-    },
-    {
-      "name": "Jardim Interno",
-      "value": 0.023,
-      "status": "normal"
-    },
-    {
-      "name": "Jardim Exterior",
-      "value": 0.05,
-      "status": "high"
-    }
-  ],
-  "config": [
-    {
-      "name": "Ativar com base na umidade do solo",
-      "value": true
-    },
-    {
-      "name": "Ativar com base no horario",
-      "value": false
-    },
-    {
-      "name": "Não ativar em dias chuvosos",
-      "value": false
-    }
-  ]
-}
-""";
-
-final String _logsJSON = """
-[
-  {
-    "name": "08/09/21 - 14:30",
-    "value": "Umidade Jardim Frontal - 0,020\\nUmidade Jardim Exterior - 0,020\\nUmidade Jardim Interno - 0,020"
-  },
-  {
-    "name": "08/09/21 - 14:00",
-    "value": "Umidade Jardim Frontal - 0,020\\nUmidade Jardim Exterior - 0,020\\nUmidade Jardim Interno - 0,020"
-  },
-  {
-    "name": "08/09/21 - 13:30",
-    "value": "Umidade Jardim Frontal - 0,020\\nUmidade Jardim Exterior - 0,020\\nUmidade Jardim Interno - 0,020"
-  },
-  {
-    "name": "08/09/21 - 13:00",
-    "value": "Umidade Jardim Frontal - 0,020\\nUmidade Jardim Exterior - 0,020\\nUmidade Jardim Interno - 0,020"
-  },
-  {
-    "name": "08/09/21 - 12:30",
-    "value": "Umidade Jardim Frontal - 0,020\\nUmidade Jardim Exterior - 0,020\\nUmidade Jardim Interno - 0,020"
-  },
-  {
-    "name": "08/09/21 - 12:00",
-    "value": "Umidade Jardim Frontal - 0,020\\nUmidade Jardim Exterior - 0,020\\nUmidade Jardim Interno - 0,020"
-  },
-  {
-    "name": "08/09/21 - 11:30",
-    "value": "Umidade Jardim Frontal - 0,020\\nUmidade Jardim Exterior - 0,020\\nUmidade Jardim Interno - 0,020"
-  }
-]
-""";
 
 final String _weatherJson = """
 {

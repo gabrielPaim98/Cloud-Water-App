@@ -4,6 +4,7 @@ import 'package:cloud_water/util/colors.dart';
 import 'package:cloud_water/util/text_styles.dart';
 import 'package:cloud_water/view/components/base_container.dart';
 import 'package:cloud_water/view/home/home_view_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,9 +24,12 @@ class HomeView extends StatelessWidget {
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                            'Ocorreu um erro ao buscar os seus dados, por favor tente novamente!'),
+                          'Ocorreu um erro ao buscar os seus dados, por favor tente novamente!',
+                          textAlign: TextAlign.center,
+                        ),
                         SizedBox(height: 16),
                         ElevatedButton(
                           child: Text('Tentar Novamente'),
@@ -152,7 +156,44 @@ class HomeView extends StatelessWidget {
                               color: Colors.black26,
                               child: Center(child: CircularProgressIndicator()),
                             )
-                          : Container()
+                          : Container(),
+                      viewModel.showUpdateConfigError
+                          ? Container(
+                              color: Colors.black26,
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: Center(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Container(
+                                    color: Colors.white,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.80,
+                                    padding: EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Ocorreu um erro ao atualizar os dados do seu dispositivo!',
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        SizedBox(height: 16),
+                                        ElevatedButton(
+                                          child: Text('Ok'),
+                                          onPressed: () => viewModel
+                                              .onUpdateConfigErrorClick(),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(),
                     ],
                   ),
       );

@@ -22,6 +22,10 @@ class HomeViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
+  bool _showUpdateConfigError = false;
+
+  bool get showUpdateConfigError => _showUpdateConfigError;
+
   Future<void> getConfig() async {
     _apiStatus = ApiStatus.LOADING;
     notifyListeners();
@@ -35,20 +39,40 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> updateFaucetStatus(bool isActive) async {
+    bool isSuccess;
     _isLoading = true;
     _homeOptions.faucetOn = isActive;
     notifyListeners();
-    await _cloudWaterService.updateFaucetStatus(isActive);
+
+    isSuccess = await _cloudWaterService.updateFaucetStatus(isActive);
     _isLoading = false;
+
+    if (!isSuccess) {
+      _homeOptions.faucetOn = !isActive;
+      _showUpdateConfigError = true;
+    }
     notifyListeners();
   }
 
   Future<void> updateConfig(int index, bool value) async {
+    bool isSuccess;
     _isLoading = true;
     _homeOptions.config.elementAt(index).value = value;
     notifyListeners();
-    await _cloudWaterService.updateConfig(_homeOptions.config.elementAt(index));
+
+    isSuccess = await _cloudWaterService
+        .updateConfig(_homeOptions.config.elementAt(index));
     _isLoading = false;
+
+    if (!isSuccess) {
+      _homeOptions.config.elementAt(index).value = !value;
+      _showUpdateConfigError = true;
+    }
+    notifyListeners();
+  }
+
+  void onUpdateConfigErrorClick() {
+    _showUpdateConfigError = false;
     notifyListeners();
   }
 }
