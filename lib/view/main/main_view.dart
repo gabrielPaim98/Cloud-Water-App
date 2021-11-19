@@ -34,36 +34,38 @@ class MainView extends StatelessWidget {
               )
             : !viewModel.isLoggedIn
                 ? LoginView()
-                : Scaffold(
-                    appBar: AppBar(
-                      title: Text('Cloud Water'),
-                      actions: [
-                        IconButton(
-                          icon: Icon(Icons.add),
-                          onPressed: () => _showAddIOT(context),
-                        )
-                      ],
-                    ),
-                    body: _widgetOptions.elementAt(viewModel.selectedIndex),
-                    bottomNavigationBar: BottomNavigationBar(
-                      items: const [
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.home),
-                          label: 'Início',
+                : viewModel.hasMainDevice
+                    ? AddIotView()
+                    : Scaffold(
+                        appBar: AppBar(
+                          title: Text('Cloud Water'),
+                          actions: [
+                            IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () => _showAddIOT(context),
+                            )
+                          ],
                         ),
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.library_books),
-                          label: 'Histórico',
+                        body: _widgetOptions.elementAt(viewModel.selectedIndex),
+                        bottomNavigationBar: BottomNavigationBar(
+                          items: const [
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.home),
+                              label: 'Início',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.library_books),
+                              label: 'Histórico',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.cloud),
+                              label: 'Clima',
+                            ),
+                          ],
+                          currentIndex: viewModel.selectedIndex,
+                          onTap: viewModel.onBnbItemClick,
                         ),
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.cloud),
-                          label: 'Clima',
-                        ),
-                      ],
-                      currentIndex: viewModel.selectedIndex,
-                      onTap: viewModel.onBnbItemClick,
-                    ),
-                  );
+                      );
       },
     );
   }

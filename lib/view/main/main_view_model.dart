@@ -1,4 +1,5 @@
 import 'package:cloud_water/model/api_status.dart';
+import 'package:cloud_water/service/cloud_water_service.dart';
 import 'package:cloud_water/service/login_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,11 +17,16 @@ class MainViewModel extends ChangeNotifier {
   bool _isLoggedIn = false;
   bool get isLoggedIn => _isLoggedIn;
 
+  bool _hasMainDevice = false;
+  bool get hasMainDevice => _hasMainDevice;
+
   ApiStatus _apiStatus = ApiStatus.LOADING;
 
   ApiStatus get apiStatus => _apiStatus;
 
   LoginService _loginService = LoginService();
+
+  CloudWaterService _cloudWaterService = CloudWaterService();
 
   void _initFirebase() async {
     Instances.firebaseApp = await Firebase.initializeApp();
@@ -31,6 +37,14 @@ class MainViewModel extends ChangeNotifier {
     User? user = await _loginService.currentUser();
     print('currentUser: ${user?.uid}');
     _isLoggedIn = user != null;
+
+    try {
+      _cloudWaterService.getFirestoreMainIot();
+      _hasMainDevice = true;
+    } catch (e) {
+      _hasMainDevice = false;
+    }
+
     _apiStatus = ApiStatus.DONE;
     notifyListeners();
   }
