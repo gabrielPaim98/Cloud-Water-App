@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:cloud_water/model/firestore_config.dart';
+import 'package:cloud_water/model/firestore_main_iot.dart';
+import 'package:cloud_water/model/firestore_user.dart';
+
 class HomeOptions {
   HomeOptions({
     required this.faucetOn,
@@ -29,6 +33,38 @@ class HomeOptions {
         "soil_read": List<dynamic>.from(soilRead.map((x) => x.toJson())),
         "config": List<dynamic>.from(config.map((x) => x.toJson())),
       };
+
+  factory HomeOptions.fromFirestore(FirestoreUser user,
+      List<FirestoreConfig> firestoreConfig, FirestoreMainIot mainIot) {
+    bool faucetOn;
+    List<SoilRead> soilRead = [];
+    List<Config> config = [];
+
+    faucetOn = user.settings.faucetOn;
+
+    mainIot.lastSoilRead.forEach((e) {
+      String stsString = e.status;
+      SoilReadStatus soilReadStatus = SoilReadStatus.HIGH;
+      if (stsString == 'low') {
+        soilReadStatus = SoilReadStatus.LOW;
+      } else if (stsString == 'normal') {
+        soilReadStatus = SoilReadStatus.NORMAL;
+      }
+      soilRead
+          .add(SoilRead(name: e.name, value: e.value, status: soilReadStatus));
+    });
+
+    user.settings.settingsConfig.forEach((e) {
+      String name;
+      bool value;
+
+      name = firestoreConfig.firstWhere((element) => element.id == e.id).name;
+      value = e.isActive;
+      config.add(Config(name: name, value: value));
+    });
+
+    return HomeOptions(faucetOn: faucetOn, soilRead: soilRead, config: config);
+  }
 }
 
 class Config {

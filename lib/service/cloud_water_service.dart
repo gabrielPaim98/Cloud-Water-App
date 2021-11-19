@@ -1,7 +1,8 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_water/instances.dart';
+import 'package:cloud_water/model/firestore_config.dart';
+import 'package:cloud_water/model/firestore_main_iot.dart';
+import 'package:cloud_water/model/firestore_user.dart';
 import 'package:cloud_water/model/home_options.dart';
 import 'package:cloud_water/model/logs.dart';
 import 'package:cloud_water/model/weather.dart';
@@ -10,6 +11,7 @@ import 'package:http/http.dart' as http;
 class CloudWaterService {
   http.Client client = http.Client();
   String? _userId;
+
   String get userId {
     if (_userId == null) {
       _userId = Instances.user!.uid;
@@ -20,6 +22,7 @@ class CloudWaterService {
   FirebaseFirestore firestore = Instances.firestore;
 
   CollectionReference? _configFirestore;
+
   CollectionReference get configFirestore {
     if (_configFirestore == null) {
       _configFirestore = firestore.collection('config');
@@ -29,6 +32,7 @@ class CloudWaterService {
   }
 
   CollectionReference? _mainIotFirestore;
+
   CollectionReference get mainIotFirestore {
     if (_mainIotFirestore == null) {
       _mainIotFirestore = firestore.collection('main_iot');
@@ -38,6 +42,7 @@ class CloudWaterService {
   }
 
   CollectionReference? _usersFirestore;
+
   CollectionReference get usersFirestore {
     if (_usersFirestore == null) {
       _usersFirestore = firestore.collection('users');
@@ -46,34 +51,15 @@ class CloudWaterService {
     return _usersFirestore!;
   }
 
-  /*Future<HomeOptions?> getHomeOptions() async {
-    HomeOptions? options;
-    try {
-      await Future<dynamic>.delayed(const Duration(seconds: 3));
-      options = HomeOptions.fromRawJson(_homeOptionsJSON);
-    } catch (e) {
-      options = null;
-    }
-
-    return options;
-  }*/
-
   Future<HomeOptions?> getHomeOptions() async {
     HomeOptions? options;
     try {
-      var userData = await usersFirestore.doc(userId).get();
-      print('userData: ${userData.data()}');
+      var firestoreUser = await getFirestoreUser();
+      var firestoreConfig = await getFirestoreConfigs();
+      var firestoreMainIot = await getFirestoreMainIot();
 
-      var configData = await configFirestore.doc('config').get();
-      print('configData: ${configData.data()}');
-
-      var mainIotData = await mainIotFirestore
-          .where('user_id', isEqualTo: userId)
-          .limit(1)
-          .get();
-      print('mainIotData: ${mainIotData.docs[0].data()}');
-
-      options = HomeOptions.fromRawJson(_homeOptionsJSON);
+      options = HomeOptions.fromFirestore(
+          firestoreUser, firestoreConfig, firestoreMainIot);
     } catch (e) {
       options = null;
       print('error getting home options: $e');
@@ -109,12 +95,7 @@ class CloudWaterService {
   Future<List<Log>?> getLogs() async {
     List<Log>? logs;
     try {
-      await Future<dynamic>.delayed(const Duration(seconds: 1));
-      logs = [];
-      final jsonBody = json.decode(_logsJSON);
-      for (final i in jsonBody) {
-        logs.add(Log.fromJson(i));
-      }
+      logs = Log.fromFirestore(await getFirestoreMainIot());
     } catch (e) {
       print('error getting logs: $e');
       logs = null;
@@ -144,6 +125,26 @@ class CloudWaterService {
     }
 
     return isSuccess;
+  }
+
+  Future<FirestoreUser> getFirestoreUser() async {
+    var userData = await usersFirestore.doc(userId).get()
+        as DocumentSnapshot<Map<String, dynamic>>;
+    return FirestoreUser.fromFirestore(userData.data()!);
+  }
+
+  Future<List<FirestoreConfig>> getFirestoreConfigs() async {
+    var configData = await configFirestore.doc('config').get()
+        as DocumentSnapshot<Map<String, dynamic>>;
+    return FirestoreConfig.fromFirestore(configData.data()!);
+  }
+
+  Future<FirestoreMainIot> getFirestoreMainIot() async {
+    var mainIotData = await mainIotFirestore
+        .where('user_id', isEqualTo: userId)
+        .limit(1)
+        .get() as QuerySnapshot<Map<String, dynamic>>;
+    return FirestoreMainIot.fromFirestore(mainIotData.docs.first.data());
   }
 }
 

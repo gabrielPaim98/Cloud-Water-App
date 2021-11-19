@@ -15,6 +15,7 @@ class LogsView extends StatelessWidget {
     return Consumer<LogsViewModel>(
       builder: (context, viewModel, child) {
         return Container(
+          height: MediaQuery.of(context).size.height,
           color: BLUE,
           child: viewModel.apiStatus == ApiStatus.LOADING
               ? Center(
