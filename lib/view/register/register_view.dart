@@ -1,35 +1,31 @@
 import 'package:cloud_water/util/colors.dart';
 import 'package:cloud_water/util/text_styles.dart';
-import 'package:cloud_water/view/login/login_view_model.dart';
-import 'package:cloud_water/view/main/main_view.dart';
-import 'package:cloud_water/view/register/register_view.dart';
+import 'package:cloud_water/view/register/register_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginView extends StatelessWidget {
+class RegisterView extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LoginViewModel>(
+    return Consumer<RegisterViewModel>(
       builder: (context, viewModel, child) {
-        if (viewModel.shouldNavigateHome) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MainView()),
-              (route) => false);
-        }
-
         return Scaffold(
+          appBar: AppBar(
+            title: Text('Cadastro'),
+            centerTitle: true,
+          ),
           backgroundColor: BLUE,
-          body: Center(
+          body: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 60),
+                const SizedBox(height: 30),
                 Text(
                   'Bem vindo ao Cloud Water!',
                   style: HeaderTS,
@@ -37,7 +33,7 @@ class LoginView extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Por favor acesse ou crie sua conta para usar o aplicativo',
+                  'Por favor insira as informações abaixo',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 60),
@@ -90,35 +86,50 @@ class LoginView extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
-                viewModel.showIncorrectCredential
-                    ? Text(
-                        'Credenciais incorretas!',
-                        style: TextStyle(color: RED),
-                      )
-                    : Container(),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextFormField(
+                    controller: _nameController,
+                    keyboardType: TextInputType.name,
+                    validator: (String? name) {
+                      if (name!.isEmpty) {
+                        return 'Nome vazio!';
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Nome',
+                      labelStyle: const TextStyle(color: BLACK),
+                      prefixIcon: const Icon(
+                        Icons.person,
+                        color: BLACK,
+                      ),
+                      border: const UnderlineInputBorder(),
+                    ),
+                    textInputAction: TextInputAction.next,
+                  ),
+                ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => viewModel.onLoginClick(
-                      _emailController.text, _passwordController.text),
+                  onPressed: () => viewModel.onRegisterClick(
+                      _emailController.text,
+                      _passwordController.text,
+                      _nameController.text),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(BLACK),
                   ),
                   child: Text(
-                    'Entrar',
+                    'Registrar-se',
                     style: TextStyle(color: WHITE),
                   ),
                 ),
                 const SizedBox(height: 60),
                 TextButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RegisterView(),
-                    ),
-                  ),
+                  onPressed: () =>
+                      viewModel.onAnonymousRegisterClick(_nameController.text),
                   child: Text(
-                    'Registrar-se',
+                    'Entrar anonimamente',
                     style: TextStyle(color: BLACK),
                   ),
                 ),
