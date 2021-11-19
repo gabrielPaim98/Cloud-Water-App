@@ -1,3 +1,5 @@
+import 'firestore_config.dart';
+
 class FirestoreUser {
   FirestoreUser({
     required this.lat,
@@ -18,6 +20,25 @@ class FirestoreUser {
         name: userSnapshot['name'],
         settings: FirestoreSettings.fromFirestore(userSnapshot['settings']));
   }
+
+  factory FirestoreUser.withDefaultSettings(
+      String lat, String lng, String name, List<FirestoreConfig> configs) {
+    return FirestoreUser(
+      lat: lat,
+      lng: lng,
+      name: name,
+      settings: FirestoreSettings.withDefaultValues(configs),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'lat': this.lat,
+      'lng': this.lng,
+      'name': this.name,
+      'settings': this.settings.toJson()
+    };
+  }
 }
 
 class FirestoreSettings {
@@ -32,9 +53,24 @@ class FirestoreSettings {
   factory FirestoreSettings.fromFirestore(
       Map<String, dynamic> settingsSnapshot) {
     return FirestoreSettings(
-        faucetOn: settingsSnapshot['faucet_on'],
-        settingsConfig:
-            FirestoreSettingsConfig.fromFirestore(settingsSnapshot['config']));
+      faucetOn: settingsSnapshot['faucet_on'],
+      settingsConfig:
+          FirestoreSettingsConfig.fromFirestore(settingsSnapshot['config']),
+    );
+  }
+
+  factory FirestoreSettings.withDefaultValues(List<FirestoreConfig> configs) {
+    return FirestoreSettings(
+      faucetOn: false,
+      settingsConfig: FirestoreSettingsConfig.withDefaultValues(configs),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'faucet_on': this.faucetOn,
+      'config': List<dynamic>.from(this.settingsConfig.map((x) => x.toJson())),
+    };
   }
 }
 
@@ -47,14 +83,29 @@ class FirestoreSettingsConfig {
   String id;
   bool isActive;
 
+  static List<FirestoreSettingsConfig> withDefaultValues(
+      List<FirestoreConfig> availableConfigs) {
+    List<FirestoreSettingsConfig> configs = [];
+
+    availableConfigs.forEach((e) {
+      configs.add(FirestoreSettingsConfig(id: e.id, isActive: false));
+    });
+
+    return configs;
+  }
+
   static List<FirestoreSettingsConfig> fromFirestore(
       Map<String, dynamic> configSnapshot) {
     List<FirestoreSettingsConfig> configs = [];
 
     configSnapshot.forEach((key, value) {
-      configs.add(FirestoreSettingsConfig(id: key, isActive: value));
+      configs.add(FirestoreSettingsConfig(id: key, isActive: false));
     });
 
     return configs;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {this.id: this.isActive};
   }
 }

@@ -6,10 +6,21 @@ import 'package:cloud_water/view/main/main_view.dart';
 import 'package:cloud_water/view/main/main_view_model.dart';
 import 'package:cloud_water/view/register/register_view_model.dart';
 import 'package:cloud_water/view/weather/weather_view_model.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'instances.dart';
+
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    var app = await Firebase.initializeApp();
+    if (app != null) Instances.firebaseApp = app;
+  } catch (e) {
+    print('error creating firebase app: $e');
+  }
+
   runApp(
     MultiProvider(
       providers: [

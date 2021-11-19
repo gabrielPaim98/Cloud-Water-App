@@ -4,7 +4,24 @@ import 'package:geolocator/geolocator.dart';
 
 class RegisterViewModel extends ChangeNotifier {
   bool _isPasswordVisible = false;
+
   bool get isPasswordVisible => _isPasswordVisible;
+
+  bool _showRegistryError = false;
+
+  bool get showRegistryError => _showRegistryError;
+
+  String _errorMsg = '';
+
+  String get errorMsg => _errorMsg;
+
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+
+  bool _shouldNavigateHome = false;
+
+  bool get shouldNavigateHome => _shouldNavigateHome;
 
   LoginService _loginService = LoginService();
 
@@ -15,17 +32,85 @@ class RegisterViewModel extends ChangeNotifier {
 
   Future<void> onRegisterClick(
       String email, String password, String name) async {
+    _showRegistryError = false;
+    _isLoading = true;
+    notifyListeners();
+
     Position userPos = await getUserLocation();
     print('email: $email');
     print('senha: $password');
     print('nome: $name');
     print('position: ${userPos.latitude}, ${userPos.longitude}');
+
+    if (email.isEmpty) {
+      _errorMsg = 'Por favor preencha o email';
+      _showRegistryError = true;
+      notifyListeners();
+      return;
+    }
+
+    if (password.isEmpty) {
+      _errorMsg = 'Por favor preencha a senha';
+      _showRegistryError = true;
+      notifyListeners();
+      return;
+    }
+
+    if (name.isEmpty) {
+      _errorMsg = 'Por favor preencha o nome';
+      _showRegistryError = true;
+      notifyListeners();
+      return;
+    }
+
+    LoginResult result = await _loginService.createUserWithEmailAndPassword(
+        email,
+        password,
+        name,
+        userPos.latitude.toString(),
+        userPos.longitude.toString());
+
+    if (result == LoginResult.SUCCESS) {
+      _shouldNavigateHome = true;
+    } else {
+      _errorMsg = result == LoginResult.EMAIL_IN_USE
+          ? 'Email em uso'
+          : result == LoginResult.WEAK_PASSWORD
+              ? 'Senha fraca'
+              : 'Ocorreu um erro ao criar a sua conta';
+      _showRegistryError = true;
+    }
+    _isLoading = false;
+    notifyListeners();
   }
 
   Future<void> onAnonymousRegisterClick(String name) async {
+    _showRegistryError = false;
+    _isLoading = true;
+    notifyListeners();
+
     Position userPos = await getUserLocation();
     print('nome: $name');
     print('position: ${userPos.latitude}, ${userPos.longitude}');
+
+    if (name.isEmpty) {
+      _errorMsg = 'Por favor preencha o nome';
+      _showRegistryError = true;
+      notifyListeners();
+      return;
+    }
+
+    LoginResult result = await _loginService.signInAnonymously(
+        name, userPos.latitude.toString(), userPos.longitude.toString());
+
+    if (result == LoginResult.SUCCESS) {
+      _shouldNavigateHome = true;
+    } else {
+      _errorMsg = 'Ocorreu um erro ao criar a sua conta';
+      _showRegistryError = true;
+    }
+    _isLoading = false;
+    notifyListeners();
   }
 
   Future<Position> getUserLocation() async {
