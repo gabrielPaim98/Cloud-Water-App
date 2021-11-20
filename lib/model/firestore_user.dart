@@ -67,9 +67,13 @@ class FirestoreSettings {
   }
 
   Map<String, dynamic> toJson() {
+    Map<String, dynamic> configsMap = {};
+    for (var i = 0; i < settingsConfig.length; i++) {
+      configsMap[settingsConfig[i].id] = settingsConfig[i].isActive;
+    }
     return {
       'faucet_on': this.faucetOn,
-      'config': List<dynamic>.from(this.settingsConfig.map((x) => x.toJson())),
+      'config': configsMap,
     };
   }
 }

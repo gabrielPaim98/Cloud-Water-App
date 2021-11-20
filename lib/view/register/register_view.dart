@@ -14,12 +14,7 @@ class RegisterView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<RegisterViewModel>(
       builder: (context, viewModel, child) {
-        if (viewModel.shouldNavigateHome) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MainView()),
-              (route) => false);
-        }
+        viewModel.updateContext(context);
 
         return Scaffold(
           appBar: AppBar(

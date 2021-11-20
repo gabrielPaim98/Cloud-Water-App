@@ -1,6 +1,9 @@
 import 'package:cloud_water/service/login_service.dart';
+import 'package:cloud_water/view/main/main_view_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
 class RegisterViewModel extends ChangeNotifier {
   bool _isPasswordVisible = false;
@@ -19,15 +22,22 @@ class RegisterViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  bool _shouldNavigateHome = false;
-
-  bool get shouldNavigateHome => _shouldNavigateHome;
+  late BuildContext _context;
 
   LoginService _loginService = LoginService();
+
+  void updateContext(BuildContext c) {
+    _context = c;
+  }
 
   void changePasswordVisibility() {
     _isPasswordVisible = !_isPasswordVisible;
     notifyListeners();
+  }
+
+  void navigateHome() async {
+    await Provider.of<MainViewModel>(_context, listen: false).getPreviousUser();
+    Navigator.pop(_context);
   }
 
   Future<void> onRegisterClick(
@@ -71,7 +81,8 @@ class RegisterViewModel extends ChangeNotifier {
         userPos.longitude.toString());
 
     if (result == LoginResult.SUCCESS) {
-      _shouldNavigateHome = true;
+      navigateHome();
+      return;
     } else {
       _errorMsg = result == LoginResult.EMAIL_IN_USE
           ? 'Email em uso'
@@ -104,7 +115,8 @@ class RegisterViewModel extends ChangeNotifier {
         name, userPos.latitude.toString(), userPos.longitude.toString());
 
     if (result == LoginResult.SUCCESS) {
-      _shouldNavigateHome = true;
+      navigateHome();
+      return;
     } else {
       _errorMsg = 'Ocorreu um erro ao criar a sua conta';
       _showRegistryError = true;

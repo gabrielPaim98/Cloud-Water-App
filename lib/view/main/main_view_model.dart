@@ -33,7 +33,7 @@ class MainViewModel extends ChangeNotifier {
     getPreviousUser();
   }
 
-  void getPreviousUser() async {
+  Future<void> getPreviousUser() async {
     User? user = await _loginService.currentUser();
     print('currentUser: ${user?.uid}');
     _isLoggedIn = user != null;
