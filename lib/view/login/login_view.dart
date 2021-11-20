@@ -14,22 +14,17 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LoginViewModel>(
       builder: (context, viewModel, child) {
-        if (viewModel.shouldNavigateHome) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MainView()),
-              (route) => false);
-        }
+        viewModel.updateContext(context);
 
         return Scaffold(
           backgroundColor: BLUE,
-          body: Center(
+          body: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 60),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.2),
                 Text(
                   'Bem vindo ao Cloud Water!',
                   style: HeaderTS,

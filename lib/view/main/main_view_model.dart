@@ -38,6 +38,12 @@ class MainViewModel extends ChangeNotifier {
     print('currentUser: ${user?.uid}');
     _isLoggedIn = user != null;
 
+    if (!_isLoggedIn) {
+      _apiStatus = ApiStatus.DONE;
+      notifyListeners();
+      return;
+    }
+
     try {
       _cloudWaterService.getFirestoreMainIot();
       _hasMainDevice = true;
@@ -51,6 +57,11 @@ class MainViewModel extends ChangeNotifier {
 
   void onBnbItemClick(int index) {
     _selectedIndex = index;
+    notifyListeners();
+  }
+
+  void addMainDevice() {
+    _hasMainDevice = true;
     notifyListeners();
   }
 }
