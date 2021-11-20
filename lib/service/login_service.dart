@@ -159,7 +159,7 @@ class LoginService {
     try {
       var allConfigs = await _cloudWaterService.getFirestoreConfigs();
       print('userId: $userId');
-      usersFirestore.doc(userId).set(
+      await usersFirestore.doc(userId).set(
           FirestoreUser.withDefaultSettings(lat, lng, name, allConfigs)
               .toJson());
       isSuccess = true;

@@ -18,7 +18,7 @@ class MainView extends StatelessWidget {
 
   void _showAddIOT(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AddIotView()));
+        context, MaterialPageRoute(builder: (context) => AddIotView(false)));
   }
 
   @override
@@ -34,8 +34,8 @@ class MainView extends StatelessWidget {
               )
             : !viewModel.isLoggedIn
                 ? LoginView()
-                : viewModel.hasMainDevice
-                    ? AddIotView()
+                : !viewModel.hasMainDevice
+                    ? AddIotView(true)
                     : Scaffold(
                         appBar: AppBar(
                           title: Text('Cloud Water'),

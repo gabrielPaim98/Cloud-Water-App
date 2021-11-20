@@ -141,6 +141,29 @@ class CloudWaterService {
     return isSuccess;
   }
 
+  Future<bool> addMainIot(String serial) async {
+    bool isSuccess;
+    try {
+      await mainIotFirestore.add(FirestoreMainIot.withDefaultValue(serial, userId).toJson());
+      isSuccess = true;
+    } catch (e) {
+      isSuccess = false;
+      print('error adding main iot: $e');
+    }
+    return isSuccess;
+  }
+
+  Future<bool> addAuxIot() async {
+    bool isSuccess;
+    try {
+      await Future<dynamic>.delayed(const Duration(seconds: 3));
+      isSuccess = true;
+    } catch (e) {
+      isSuccess = false;
+    }
+    return isSuccess;
+  }
+
   Future<FirestoreUser> getFirestoreUser() async {
     var userData = await usersFirestore.doc(userId).get()
         as DocumentSnapshot<Map<String, dynamic>>;

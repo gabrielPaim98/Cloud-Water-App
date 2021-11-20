@@ -25,6 +25,30 @@ class FirestoreMainIot {
       serial: iotSnapshot['serial'],
     );
   }
+
+  factory FirestoreMainIot.withDefaultValue(String serial, String userId) {
+    return FirestoreMainIot(
+      auxIot: [],
+      lastSoilRead: [],
+      log: [],
+      userId: userId,
+      serial: serial,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> emptyMap = {};
+    return {
+      'aux_iot': this.auxIot.isEmpty
+          ? emptyMap
+          : List<dynamic>.from(this.auxIot.map((x) => x.toJson())),
+      'last_soil_read':
+          this.lastSoilRead.isEmpty ? emptyMap : this.lastSoilRead,
+      'logs': this.lastSoilRead,
+      'serial': this.serial,
+      'user_id': this.userId,
+    };
+  }
 }
 
 class FirestoreAuxIot {
@@ -47,6 +71,15 @@ class FirestoreAuxIot {
     });
 
     return iots;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      this.id: {
+        'name': this.name,
+        'serial': this.serial,
+      }
+    };
   }
 }
 

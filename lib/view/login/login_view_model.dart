@@ -25,9 +25,6 @@ class LoginViewModel extends ChangeNotifier {
 
   void navigateHome() {
     Provider.of<MainViewModel>(_context, listen: false).getPreviousUser();
-
-    // Navigator.pushAndRemoveUntil(_context,
-    //     MaterialPageRoute(builder: (context) => MainView()), (route) => false);
   }
 
   void onLoginClick(String email, String password) async {

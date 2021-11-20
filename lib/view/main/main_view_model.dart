@@ -38,6 +38,7 @@ class MainViewModel extends ChangeNotifier {
     print('currentUser: ${user?.uid}');
     _isLoggedIn = user != null;
 
+    print('isLoggedIn? $_isLoggedIn');
     if (!_isLoggedIn) {
       _apiStatus = ApiStatus.DONE;
       notifyListeners();
@@ -45,12 +46,14 @@ class MainViewModel extends ChangeNotifier {
     }
 
     try {
-      _cloudWaterService.getFirestoreMainIot();
+      var device = await _cloudWaterService.getFirestoreMainIot();
+      print('device: ${device.serial}');
       _hasMainDevice = true;
     } catch (e) {
       _hasMainDevice = false;
     }
 
+    print('hasMainDevice? $_hasMainDevice');
     _apiStatus = ApiStatus.DONE;
     notifyListeners();
   }
