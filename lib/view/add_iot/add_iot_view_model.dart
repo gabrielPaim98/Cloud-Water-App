@@ -33,7 +33,7 @@ class AddIotViewModel extends ChangeNotifier {
       isSuccess = await _cloudWaterService.addMainIot(serial);
     } else {
       //TODO: add aux iot
-      isSuccess = await _cloudWaterService.addDevice(name, serial);
+      isSuccess = await _cloudWaterService.addAuxIot(name, serial);
     }
 
     if (isSuccess) {
@@ -50,5 +50,8 @@ class AddIotViewModel extends ChangeNotifier {
     if (isMainIot) {
       Provider.of<MainViewModel>(_context, listen: false).getPreviousUser();
     }
+    isMainIot = false;
+    _showSuccessDialog = false;
+    notifyListeners();
   }
 }

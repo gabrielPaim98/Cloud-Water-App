@@ -6,6 +6,7 @@ import 'package:cloud_water/model/firestore_user.dart';
 import 'package:cloud_water/model/home_options.dart';
 import 'package:cloud_water/model/logs.dart';
 import 'package:cloud_water/model/weather.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 class CloudWaterService {
@@ -129,13 +130,43 @@ class CloudWaterService {
     return prediction;
   }
 
-  Future<bool> addDevice(String name, String serial) async {
+  Future<bool> addAuxIot(String name, String serial) async {
     bool isSuccess;
     try {
-      await Future<dynamic>.delayed(const Duration(seconds: 3));
+      String uuid = UniqueKey()
+          .toString()
+          .replaceAll('[', '')
+          .replaceAll('#', '')
+          .replaceAll(']', '');
+      print('uuid: $uuid');
+
+      var mainIotData = await mainIotFirestore
+          .where('user_id', isEqualTo: userId)
+          .limit(1)
+          .get() as QuerySnapshot<Map<String, dynamic>>;
+
+      var mainId = mainIotData.docs.first.id;
+
+      print('mainId: $mainId');
+
+      Map<String, dynamic> auxIot = {
+        'name': name,
+        'serial': serial,
+      };
+
+      await mainIotFirestore
+          .doc(mainId)
+          .update({'aux_iot.$uuid': auxIot}).then((value) {
+        isSuccess = true;
+      }).catchError((e) {
+        isSuccess = false;
+        print('error adding aux iot: $e');
+      });
+
       isSuccess = true;
     } catch (e) {
       isSuccess = false;
+      print('error adding aux iot: $e');
     }
 
     return isSuccess;
@@ -144,22 +175,12 @@ class CloudWaterService {
   Future<bool> addMainIot(String serial) async {
     bool isSuccess;
     try {
-      await mainIotFirestore.add(FirestoreMainIot.withDefaultValue(serial, userId).toJson());
+      await mainIotFirestore
+          .add(FirestoreMainIot.withDefaultValue(serial, userId).toJson());
       isSuccess = true;
     } catch (e) {
       isSuccess = false;
       print('error adding main iot: $e');
-    }
-    return isSuccess;
-  }
-
-  Future<bool> addAuxIot() async {
-    bool isSuccess;
-    try {
-      await Future<dynamic>.delayed(const Duration(seconds: 3));
-      isSuccess = true;
-    } catch (e) {
-      isSuccess = false;
     }
     return isSuccess;
   }
