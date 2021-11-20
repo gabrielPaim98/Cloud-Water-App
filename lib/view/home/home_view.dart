@@ -67,6 +67,13 @@ class HomeView extends StatelessWidget {
                                   'Umidade do Solo',
                                   style: HeaderTS,
                                 ),
+                                viewModel.homeOptions.soilRead.isEmpty ?
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('Ainda não há informações deste dispositivo', textAlign: TextAlign.center,),
+                                      ),
+                                    ) :
                                 ListView.builder(
                                     itemCount:
                                         viewModel.homeOptions.soilRead.length,

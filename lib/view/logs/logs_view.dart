@@ -50,6 +50,13 @@ class LogsView extends StatelessWidget {
                                   style: HeaderTS,
                                 ),
                               ),
+                              viewModel.logs.isEmpty ?
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('Ainda não há informações deste dispositivo', textAlign: TextAlign.center,),
+                                ),
+                              ) :
                               ListView.separated(
                                   itemCount: viewModel.logs.length,
                                   shrinkWrap: true,
