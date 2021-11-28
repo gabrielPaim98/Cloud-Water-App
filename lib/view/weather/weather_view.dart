@@ -25,7 +25,9 @@ class WeatherView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                              'Ocorreu um erro ao buscar os seus dados, por favor tente novamente!'),
+                            'Ocorreu um erro ao buscar os seus dados, por favor tente novamente!',
+                            textAlign: TextAlign.center,
+                          ),
                           SizedBox(height: 16),
                           ElevatedButton(
                             child: Text('Tentar Novamente'),
@@ -39,9 +41,7 @@ class WeatherView extends StatelessWidget {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 16
-                        ),
+                        SizedBox(height: 16),
                         Text(
                           'Previsão climática',
                           style: HeaderTS,
@@ -50,32 +50,52 @@ class WeatherView extends StatelessWidget {
                           height: 16,
                           width: MediaQuery.of(context).size.width,
                         ),
-                        BaseContainer(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Hoje',
-                                style: HeaderTS,
-                              ),
-                              SizedBox(height: 4),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.cloud),
-                                  SizedBox(width: 8),
-                                  Text('${viewModel.prediction.today.current}°')
-                                ],
-                              ),
-                              Text(viewModel.prediction.today.status ?? ''),
-                              Text('Min. ${viewModel.prediction.today.min}°   Max. ${viewModel.prediction.today.max}°'),
-                              Text('Chance de chuva: ${viewModel.prediction.today.rainChance}'),
-                              Text('Indice UV: ${viewModel.prediction.today.uv}'),
-                              Text('Umidade: ${viewModel.prediction.today.humidity}%'),
-                            ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: BaseContainer(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Hoje',
+                                  style: HeaderTS,
+                                ),
+                                SizedBox(height: 4),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.cloud,
+                                      size: 64,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      '${viewModel.prediction.today.current}°',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Text(viewModel.prediction.today.status ?? '', style: TextStyle(fontSize: 22),),
+                                SizedBox(height: 8),
+                                Text(
+                                    'Min. ${viewModel.prediction.today.min}°   Max. ${viewModel.prediction.today.max}°', style: TextStyle(fontSize: 22),),
+                                SizedBox(height: 8),
+                                Text(
+                                    'Volume de chuva: ${viewModel.prediction.today.rainChance}', style: TextStyle(fontSize: 22),),
+                                SizedBox(height: 8),
+                                Text(
+                                    'Indice UV: ${viewModel.prediction.today.uv}', style: TextStyle(fontSize: 22),),
+                                SizedBox(height: 8),
+                                Text(
+                                    'Umidade: ${viewModel.prediction.today.humidity}%', style: TextStyle(fontSize: 22),),
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -85,38 +105,6 @@ class WeatherView extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            BaseContainer(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Ontem',
-                                    style: HeaderTS,
-                                  ),
-                                  SizedBox(height: 4),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.cloud),
-                                      SizedBox(width: 8),
-                                      Text('${viewModel.prediction.yesterday.min}°/${viewModel.prediction.yesterday.max}°')
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.cloud_outlined),
-                                      SizedBox(width: 8),
-                                      Text('${viewModel.prediction.yesterday.rainChance}%')
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
                             BaseContainer(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,18 +122,13 @@ class WeatherView extends StatelessWidget {
                                     children: [
                                       Icon(Icons.cloud),
                                       SizedBox(width: 8),
-                                      Text('${viewModel.prediction.tomorrow.min}°/${viewModel.prediction.tomorrow.max}°')
+                                      Text(
+                                          '${viewModel.prediction.tomorrow.min}°/${viewModel.prediction.tomorrow.max}°', style: TextStyle(fontSize: 22),)
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.cloud_outlined),
-                                      SizedBox(width: 8),
-                                      Text('${viewModel.prediction.tomorrow.rainChance}%')
-                                    ],
-                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'Volume de chuva: ${viewModel.prediction.tomorrow.rainChance}', style: TextStyle(fontSize: 22),)
                                 ],
                               ),
                             ),

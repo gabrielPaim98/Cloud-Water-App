@@ -3,12 +3,10 @@ import 'dart:convert';
 class WeatherPrediction {
   WeatherPrediction({
     required this.today,
-    required this.yesterday,
     required this.tomorrow,
   });
 
   Weather today;
-  Weather yesterday;
   Weather tomorrow;
 
   factory WeatherPrediction.fromRawJson(String str) =>
@@ -19,13 +17,11 @@ class WeatherPrediction {
   factory WeatherPrediction.fromJson(Map<String, dynamic> json) =>
       WeatherPrediction(
         today: Weather.fromJson(json["today"]),
-        yesterday: Weather.fromJson(json["yesterday"]),
         tomorrow: Weather.fromJson(json["tomorrow"]),
       );
 
   Map<String, dynamic> toJson() => {
         "today": today.toJson(),
-        "yesterday": yesterday.toJson(),
         "tomorrow": tomorrow.toJson(),
       };
 }
@@ -41,26 +37,26 @@ class Weather {
     required this.rainChance,
   });
 
-  int min;
-  int max;
-  int? current;
+  double min;
+  double max;
+  double? current;
   String? status;
   String? uv;
-  int? humidity;
-  int rainChance;
+  double? humidity;
+  double rainChance;
 
   factory Weather.fromRawJson(String str) => Weather.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory Weather.fromJson(Map<String, dynamic> json) => Weather(
-        min: json["min"],
-        max: json["max"],
-        current: json["current"] == null ? null : json["current"],
+        min: double.parse(json["min"].toString()),
+        max: double.parse(json["max"].toString()),
+        current: json["current"] == null ? null : double.parse(json["current"].toString()),
         status: json["status"] == null ? null : json["status"],
         uv: json["uv"] == null ? null : json["uv"],
-        humidity: json["humidity"] == null ? null : json["humidity"],
-        rainChance: json["rain_chance"],
+        humidity: json["humidity"] == null ? null : double.parse(json["humidity"].toString()),
+        rainChance: json["rain_chance"] == null ? 0.0 : double.parse(json["rain_chance"].toString()),
       );
 
   Map<String, dynamic> toJson() => {

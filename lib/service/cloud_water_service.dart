@@ -6,6 +6,7 @@ import 'package:cloud_water/model/firestore_user.dart';
 import 'package:cloud_water/model/home_options.dart';
 import 'package:cloud_water/model/logs.dart';
 import 'package:cloud_water/model/weather.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
@@ -122,9 +123,30 @@ class CloudWaterService {
   Future<WeatherPrediction?> getWeatherPrediction() async {
     WeatherPrediction? prediction;
     try {
-      await Future<dynamic>.delayed(const Duration(seconds: 1));
-      prediction = WeatherPrediction.fromRawJson(_weatherJson);
-    } catch (e) {
+      // await Future<dynamic>.delayed(const Duration(seconds: 1));
+      // prediction = WeatherPrediction.fromRawJson(_weatherJson);
+
+      var u = await getFirestoreUser();
+
+      print('user lat: ${u.lat} lng: ${u.lng}');
+
+      final Uri uri = Uri.parse(
+          'https://us-central1-cloud-water-ac2cb.cloudfunctions.net/forecast');
+      final Map<String, String> headers = <String, String>{
+        'Accept': 'application/json'
+      };
+      final Map<String, dynamic> body = {'lat': u.lat, 'lng': u.lng};
+      final http.Response response =
+          await http.post(uri, headers: headers, body: body);
+
+      print('res: ${response.statusCode} ${response.body}');
+      if (response.statusCode != 200) {
+        return null;
+      }
+
+      prediction = WeatherPrediction.fromRawJson(response.body);
+    } catch (e, stacktrace) {
+      print('error weather prediction $e $stacktrace');
       prediction = null;
     }
     return prediction;
@@ -209,31 +231,22 @@ class CloudWaterService {
 final String _weatherJson = """
 {
   "today": {
-    "min": 24,
-    "max": 32,
-    "current": 28,
-    "status": "Parcialmente Nublado",
-    "uv": "Alto",
-    "humidity": 72,
-    "rain_chance": 7
-  },
-  "yesterday": {
-    "min": 24,
-    "max": 32,
-    "current": null,
-    "status": null,
-    "uv": null,
-    "humidity": null,
-    "rain_chance": 7
+    "min": 24.85,
+    "max": 27.61,
+    "current": 26.96,
+    "status": "nuvens dispersas",
+    "uv": "Baixo",
+    "humidity": 61,
+    "rain_chance": 5.87
   },
   "tomorrow": {
-    "min": 24,
-    "max": 32,
+    "min": 24.48,
+    "max": 26.96,
     "current": null,
     "status": null,
     "uv": null,
     "humidity": null,
-    "rain_chance": 7
+    "rain_chance": 1.01
   }
 }
 """;

@@ -24,8 +24,9 @@ class WeatherViewModel extends ChangeNotifier {
     try {
       _prediction = (await _cloudWaterService.getWeatherPrediction())!;
       _apiStatus = ApiStatus.DONE;
-    } catch (e) {
+    } catch (e, stacktrace) {
       _apiStatus = ApiStatus.ERROR;
+      print('error getting weather prediction $e $stacktrace');
     }
     notifyListeners();
   }
