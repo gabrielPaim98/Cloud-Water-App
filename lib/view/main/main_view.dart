@@ -43,6 +43,10 @@ class MainView extends StatelessWidget {
                             IconButton(
                               icon: Icon(Icons.add),
                               onPressed: () => _showAddIOT(context),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.refresh),
+                              onPressed: () => viewModel.refresh(context),
                             )
                           ],
                         ),

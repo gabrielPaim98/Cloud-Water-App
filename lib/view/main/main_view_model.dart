@@ -1,9 +1,14 @@
 import 'package:cloud_water/model/api_status.dart';
 import 'package:cloud_water/service/cloud_water_service.dart';
 import 'package:cloud_water/service/login_service.dart';
+import 'package:cloud_water/view/home/home_view_model.dart';
+import 'package:cloud_water/view/logs/logs_view_model.dart';
+import 'package:cloud_water/view/weather/weather_view_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 import '../../instances.dart';
 
@@ -66,5 +71,15 @@ class MainViewModel extends ChangeNotifier {
   void addMainDevice() {
     _hasMainDevice = true;
     notifyListeners();
+  }
+
+  void refresh(BuildContext context) {
+    if (_selectedIndex == 0) {
+      Provider.of<HomeViewModel>(context, listen: false).getConfig();
+    } else if (_selectedIndex  == 1) {
+      Provider.of<LogsViewModel>(context, listen: false).getLogs();
+    } else if (_selectedIndex == 2) {
+      Provider.of<WeatherViewModel>(context, listen: false).getWeatherPrediction();
+    }
   }
 }
