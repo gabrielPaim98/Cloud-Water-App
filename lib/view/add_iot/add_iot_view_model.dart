@@ -46,9 +46,9 @@ class AddIotViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onSuccessDialogClick() {
+  void onSuccessDialogClick() async {
     if (isMainIot) {
-      Provider.of<MainViewModel>(_context, listen: false).getPreviousUser();
+      await Provider.of<MainViewModel>(_context, listen: false).getPreviousUser();
     }
     isMainIot = false;
     _showSuccessDialog = false;
